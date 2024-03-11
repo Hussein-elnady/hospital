@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتب الدخول</title>
+    <style>
+        @page {
+            size: 10in 15in;
+            margin: 0.45mm 0.45mm 0.45mm 0.45mm;
+        }
+
+        body {
+            font-family: sans-serif;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .container {
+            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0); /* Example gradient */
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 894px;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 5px;
+            background: linear-gradient(to bottom, #d2edbf, #a49696); /* Example gradient */
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 5px 0;
+            max-width: auto;
+            color: #0457be; /* Centering h1 color */
+        }
+
+        #table1 {
+            border: none;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        #table1 td {
+            padding: 5px;
+            }
+
+        #table1 img {
+            width: 80px;
+            height: 80px;
+        }
+
+        #table1 td:first-child {
+            width: 40%;
+        }
+
+        #table1 td:nth-child(2) {
+            width: 20%;
+        }
+
+        #table1 td:last-child {
+            width: 40%;
+        }
+
+        #table2 {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 12px;
+
+        }
+
+        #table2 td {
+            padding: 5px;
+            }
+
+        #table2 tr {
+            height: calc(1px / 1);
+        }
+
+        #table2 td:nth-child(1) { /* Target all child cells */
+            width: calc(25% - 4px); /* Calculate width based on total columns and padding */
+        }
+
+        /* Style for labels */
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Style for inputs */
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: calc(100% - 12px); /* Adjust width to fit the container */
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        /* Style for submit button */
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Style for submit button on hover */
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        @media screen and (min-width: 600px) {
+            .container{
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table id="table1">
+        <tr>
+          <td>وزارة الصحة والسكان</td>
+          <td rowspan="3"><img src="https://photos.app.goo.gl/L68NF7KK5b7t39Ai7"></td>
+          <td rowspan="2">اسم المريض: ....................................................</td>
+        </tr>
+        <tr>
+          <td>مديرية الشئون الصحية بالقليوبية</td>
+        </tr>
+        <tr>
+          <td>مستشفى أبو المنجا المركزي</td>
+          <td rowspan="2">الرقم الطبي: ....................................................</td>
+        </tr>
+      </table>
+
+    <div class="container">
+        <h1>صحيفة دخول وخروج</h1>
+        <form id="patient-form" action="{% url 'patient_registration' %}" method="post">
+            {% csrf_token %}
+
+            <table id="table2">
+                <tr>
+                    <td><label for="full_name">الاسم رباعي:</label></td>
+                    <td><input type="text" name="full_name" id="full_name"></td>
+                    <td><label for="date_of_birth" >تاريخ الميلاد:</label></td>
+                   <td><input type="date" id="date_of_birth" name="date_of_birth" placeholder="YYYY-MM-DD"></td>
+                    <td><label for="gender">النوع:</label></td>
+                    <td><select name="gender" id="gender">
+                        <option value=""></option>
+                        <option value="male">ذكر</option>
+                        <option value="female">أنثى</option>
+                    </select></td>
+                    <td><label for="national_number">الرقم القومي:</label></td>
+                    <td><input type="text" name="national_number" id="national_number"></td>
+                </tr>
+                <tr>
+                    <td><label for="insurance_number">الرقم التأميني:</label></td>
+                    <td><input type="text" name="insurance_number" id="insurance_number"></td>
+                    <td><label for="admission_number">رقم الدخول:</label></td>
+                    <td><input type="text" name="admission_number" id="admission_number"></td>
+                </tr>
+                <tr>
+                    <td><label for="social_status">الحالة الاجتماعية:</label></td>
+                    <td><select name="social_status" id="social_status">
+                        <option value=""></option>
+                        <option value="single">أعزب</option>
+                        <option value="married">متزوج</option>
+                        <option value="divorced">مطلق</option>
+                        <option value="widowed">أرمل</option>
+                    </select></td>
+                    <td><label for="religion">الديانة:</label></td>
+                    <td><select name="religion" id="religion">
+                        <option value=""></option>
+                        <option value="Muslim">مسلم</option>
+                        <option value="Christian">مسيحي</option>
+                        <option value="Other than that">غير ذلك</option>
+                    </select></td>
+                    <td><label for="profession">المهنة:</label></td>
+                    <td><input type="text" name="profession" id="profession"></td>
+                    <td><label for="employer">جهة العمل:</label></td>
+                    <td><input type="text" name="employer" id="employer"></td>
+                </tr>
+                <tr>
+                    <td><label for="address">عنوان المريض:</label></td>
+                    <td><input type="text" name="address" id="address"></td>
+                    <td><label for="city_village">المدينة/القرية:</label></td>
+                    <td><input type="text" name="city_village" id="city_village"></td>
+                    <td><label for="governorate">المحافظة:</label></td>
+                    <td><input type="text" name="governorate" id="governorate"></td>
+                    <td><label for="phone_number">رقم التليفون:</label></td>
+                    <td><input type="text" name="phone_number" id="phone_number"></td>
+                </tr>
+                <tr>
+                    <td><label for="emergency_contact_name">اسم من يمكن الرجوع إليه:</label></td>
+                    <td><input type="text" name="emergency_contact_name" id="emergency_contact_name"></td>
+                    <td><label for="emergency_contact_relationship">العلاقة:</label></td>
+                    <td><input type="text" name="emergency_contact_relationship" id="emergency_contact_relationship"></td>
+                    <td><label for="emergency_contact_address">عنوانه:</label></td>
+                    <td><input type="text" name="emergency_contact_address" id="emergency_contact_address"></td>
+                    <td><label for="emergency_contact_phone_number">رقم التليفون:</label></td>
+                    <td><input type="text" name="emergency_contact_phone_number" id="emergency_contact_phone_number"></td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><label for="insurance_provider_contact_name">اسم المسئول عن احضار موقف المريض التأميني:</label></td>
+                    <td><input type="text" name="insurance_provider_contact_name" id="insurance_provider_contact_name"></td>
+                    <td><label for="insurance_provider_relationship">العلاقة:</label></td>
+                    <td><input type="text" name="insurance_provider_relationship" id="insurance_provider_relationship"></td>
+                    <td><label for="insurance_provider_address">عنوانه:</label></td>
+                    <td><input type="text" name="insurance_provider_address" id="insurance_provider_address"></td>
+                    <td><label for="insurance_provider_phone_number">رقم التليفون:</label></td>
+                    <td><input type="text" name="insurance_provider_phone_number" id="insurance_provider_phone_number"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><label for="Relative_Signature">التوقيع:</label></td>
+                    <td>....................................................</td></td>
+                </tr>
+
+                <tr>
+                    <td><label for="admitted_by">حول من قبل:</label></td>
+                    <td><select name="admitted_by" id="admitted_by">
+                        <option value=""></option>
+                        <option value="reception">استقبال</option>
+                        <option value="clinic">عيادة</option>
+                        <option value="other">أخرى</option>
+                    </select></td>
+
+                    <td><label for="accident_location">حادث في:</label></td>
+                    <td><select name="accident_location" id="accident_location">
+                        <option value=""></option>
+                        <option value="home">المنزل</option>
+                        <option value="work">العمل</option>
+                        <option value="road">الطريق</option>
+                        <option value="other">أخرى</option>
+                    </select></td>
+
+                    <td><label for="police_report">محال من الشرطة:</label></td>
+                    <td><select name="police_report" id="police_report">
+                        <option value=""></option>
+                        <option value="yes">نعم</option>
+                        <option value="no">لا</option>
+                    </select></td>
+
+                    <td><label for="previous_admission">دخول سابق:</label></td>
+                    <td><select name="previous_admission" id="previous_admission">
+                        <option value=""></option>
+                        <option value="yes">نعم</option>
+                        <option value="no">لا</option>
+                    </select></td>
+                </tr>
+
+                <tr>
+                    <td><label for="treating_physician">الطبيب المعالج <br> الأمر بالدخول:</label></td>
+                    <td><input type="text" name="treating_physician" id="treating_physician"></td>
+
+                    <td><label for="admission_department">قسم الدخول:</label></td>
+                    <td><input type="text" name="admission_department" id="admission_department"></td>
+
+                    <td><label for="room">الحجرة:</label></td>
+                    <td><input type="text" name="room" id="room"></td>
+
+                    <td><label for="room_grade">الدرجة:</label></td>
+                    <td><input type="text" name="room_grade" id="room_grade"></td>
+                </tr>
+
+                <tr>
+                    <td><label for="initial_diagnosis">التشخيص المبدئي:</label></td>
+                    <td colspan="7" ><textarea style="width: 100%" rows="2" name="initial_diagnosis" id="initial_diagnosis"></textarea></td>
+                </tr>
+
+                <tr>
+                    <td><label for="admission_date">تاريخ الدخول:</label></td>
+                    <td><input type="date" name="admission_date" id="admission_date" placeholder="YYYY-MM-DD"></td>
+
+                    <td><label for="admission_time">الساعة:</label></td>
+                    <td><input type="time" name="admission_time" id="admission_time"></td>
+
+                    <td><label for="discharge_date">تاريخ الخروج:</label></td>
+                    <td><input type="date" name="discharge_date" id="discharge_date" placeholder="YYYY-MM-DD"></td>
+
+                    <td><label for="discharge_time">الساعة:</label></td>
+                    <td><input type="time" name="discharge_time" id="discharge_time"></td>
+                </tr>
+
+                <tr>
+                    <td><label for="length_of_stay">مدة الإقامة:</label></td>
+                    <td><input type="number" name="length_of_stay" id="length_of_stay"></td>
+                </tr>
+
+                <tr>
+                    <td> اعتماد الدخول:</td>
+                    <td>....................................................</td>
+                    <td >التمريض:</td>
+                    <td>....................................................</td>
+                    <td> كاتب الدخول:</td>
+                    <td>....................................................</td>
+                </tr>
+                <tr><td></td></tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">ICD 11 CODE</td>
+                    <td></td>
+                    <td colspan="2">التشخيص النهائي</td>
+                    <td></td>
+                    <td colspan="2" style="text-align: left;">FINAL DIAGNOSIS</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: center;">...........................................</td>
+                    <td></td>
+                    <td colspan="5" ><textarea style="width: 100%" rows="2" name="final_diagnosis" id="final_diagnosis"></textarea></td>
+                </tr>
+
+                <tr>
+                    <td colspan="3"></td>
+                    <td colspan="2">التشخيصات المصاحبة</td>
+                    <td></td>
+                    <td colspan="2" style="text-align: left;">ASSOCIATED DIAGNOSIS</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: center;"><label for="service_type">نوع الخدمة:</label></td>
+                    <td></td>
+                    <td colspan="5" ><textarea style="width: 100%" rows="2" name="associated_diagnosis" id="associated_diagnosis"></textarea></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2"><select name="service_type" id="service_type">
+                        <option value=""></option>
+                        <option value="free">مجاني</option>
+                        <option value="economic">اقتصادي</option>
+                        <option value="insurance">تأمين</option>
+                        <option value="government">نفقة دولة</option>
+                    </select></td>
+                    <td></td>
+                    <td colspan="2">العميات</td>
+                    <td></td>
+                    <td colspan="2" style="text-align: left;">OPERATION OR PROCEDURES</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: center;"></td>
+                    <td></td>
+                    <td colspan="5" ><textarea style="width: 100%" rows="2" name="operation_procedures" id="operation_procedures"></textarea></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: center;">Autopsy</td>
+                    <td></td>
+                    <td colspan="2"><label for="discharge_status">الحالة عند الخروج:</label></td>
+
+                    <td colspan="2"><label for="discharge_destination">خروج إلى:</label></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2"><select name="autopsy" id="autopsy">
+                        <option value=""></option>
+                        <option value="yes">نعم</option>
+                        <option value="No">لا</option>
+                    </select></td>
+                    <td></td>
+                    <td colspan="2"><select name="discharge_status" id="discharge_status">
+                        <option value=""></option>
+                        <option value="recovery">شفاء</option>
+                        <option value="improvement">تحسن</option>
+                        <option value="no_improvement">لم تتحسن</option>
+                        <option value="death">وفاة</option>
+                    </select></td>
+                    <td colspan="2"><select name="discharge_destination" id="discharge_destination">
+                        <option value=""></option>
+                        <option value="clinic">عيادة</option>
+                        <option value="other_hospital">مستشفى أخرى</option>
+                        <option value="request">خروج حسب الطلب</option>
+                        <option value="home">المنزل</option>
+                    </select></td>
+                </tr>
+            </table>
+            <button type="submit">تسجيل</button>
+        </form>
+    </div>
+    <table id="table1">
+        <tr>
+          <td>اعتماد الطبيب للخروج</td>
+          <td></td>
+          <td>اعتماد مدير المستشفى للخروج</td>
+        </tr>
+        <tr>
+          <td>الاسم: ....................................................</td>
+          <td></td>
+          <td>....................................................</td>
+        </tr>
+        <tr>
+            <td>التوقيع: ....................................................</td>
+        </tr>
+        <tr>
+            <td>التاريخ: .................... الوقت: ....................</td>
+        </tr>
+      </table>
+
+    <button type="button" id="print-button">Print Page</button>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Function to submit the form and then print the page
+        function submitFormAndPrint() {
+            // Submit the form
+            document.getElementById("patient-form").submit();
+
+            // Print the page
+            window.print();
+        }
+
+        // Attach event listener to the print button
+        document.getElementById("print-button").addEventListener("click", submitFormAndPrint);
+    });
+
+
+</script>
+
+</body>
+</html>

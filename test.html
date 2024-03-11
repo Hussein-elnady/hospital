@@ -1,0 +1,29 @@
+<table>
+  <tr>
+    <th>Full Name</th>
+    </tr>
+  <tr>
+    <td>
+      <form method="post" action="{% url 'process_patient_entry' %}">
+        {% csrf_token %}
+        <input type="text" name="full_name" placeholder="Full Name">
+        <button type="submit">Submit</button>
+      </form>
+    </td>
+    </tr>
+</table>
+--------------
+<table>
+  <tr>
+    <th>Full Name</th>
+    </tr>
+  <tr>
+    <td></td>
+    </tr>
+</table>
+
+<form method="post" action="{% url 'process_patient_entry' %}">
+  {% csrf_token %}
+  <input type="text" name="full_name" placeholder="Full Name">
+  <button type="submit">Submit</button>
+</form>

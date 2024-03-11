@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #2980b9, #6dd5fa); /* Gradient background */
+            overflow-x: hidden; /* Hide horizontal scrollbar */
+        }
+
+        /* Header styles */
+        h1 {
+            text-align: center;
+            margin-top: 90px;
+            color: #ffff; /* White text color */
+        }
+
+        /* Navigation styles */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        ul li {
+            margin-bottom: 50px;
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: #fff; /* White link color */
+            font-size: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #2980b9; /* Blue background color */
+            transition: background-color 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+            display: inline-block; /* Make links display inline */
+        }
+
+        ul li a:hover {
+            background-color: #6dd5fa; /* Light blue background color on hover */
+        }
+
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            /* Adjust styles for smaller screens */
+            h1 {
+                font-size: 30px;
+            }
+
+            ul li a {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Main Page</h1>
+    {% if admin %}
+        <ul>
+            <li><a href="{% url 'patient_registration' %}">Record Patient Data</a></li>
+            <li><a href="{% url 'generate_reports' %}">Generate Reports</a></li>
+            <li><a href="{% url 'search_patient' %}">Search for a Patient</a></li>
+        </ul>
+    {% else %}
+        <ul>
+            <li><a href="{% url 'patient_registration' %}">Record Patient Data</a></li>
+            <li><a href="{% url 'search_patient' %}">Search for a Patient</a></li>
+        </ul>
+    {% endif %}
+</body>
+<script>
+    // Add JavaScript code here if needed
+</script>
+</html>

@@ -1,0 +1,87 @@
+<!-- login.html -->
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
+    <style>
+    body {
+        background: linear-gradient(135deg, #007bff, #00bfff); /* Gradient blue background */
+        font-family: 'Tajawal', Arial, sans-serif; /* Use appropriate font family */
+        margin: 0;
+        padding: 0;
+        height: 100vh; /* Set full height of the viewport */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column; /* Align items in a column */
+    }
+    form {
+        background-color: #ffffff; /* Form background color */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #fff; /* Centering h1 color */
+    }
+    label {
+        font-weight: bold;
+        color: #333; /* Text color */
+    }
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        line-height: 1.5; /* Increase line height for better readability */
+    }
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #0056b3; /* Button background color */
+        color: #ffffff; /* Button text color */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button[type="submit"]:hover {
+        background-color: #004080; /* Change background color on hover */
+    }
+</style>
+    </head>
+<body>
+  <h1>تسجيل الدخول</h1>
+  <form id="loginForm" method="post">
+    {% csrf_token %}
+    {% if error_message %}
+      <p>{{ error_message }}</p>
+    {% endif %}
+    <label for="username">اسم المستخدم:</label>
+    <input type="text" id="username" name="username" placeholder="ادخل اسم المستخدم"><br><br>
+    <label for="password">كلمة المرور:</label>
+    <input type="password" id="password" name="password" placeholder="ادخل كلمة المرور"><br><br>
+    <button type="submit">تسجيل الدخول</button>
+  </form>
+
+  <script>
+    // JavaScript to validate the login form
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      var username = document.getElementById("username").value.trim();
+      var password = document.getElementById("password").value.trim();
+
+      if (!username || !password) {
+        event.preventDefault(); // Prevent form submission
+        alert("الرجاء ادخال اسم المستخدم وكلمة المرور.");
+      }
+    });
+  </script>
+</body>
+</html>

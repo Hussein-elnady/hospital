@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Patients</title>
+</head>
+<body>
+    <h1>Search Patients</h1>
+    <form action="{% url 'search_patient' %}" method="GET">
+        <input type="text" name="query" placeholder="Enter patient name">
+        <button type="submit">Search</button>
+    </form>
+    <h2>Search Results for "{{ query }}"</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Full Name</th>
+                <!-- Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td>{{ patient.id }}</td>
+                <td>{{ patient.full_name }}</td>
+                <!-- Render additional patient data as needed -->
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No patients found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
