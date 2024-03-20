@@ -1,29 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Reports</title>
+    <title>التقارير</title>
+    <style>
+         @page {
+            size: 10in 15in;
+            margin: 0.45mm 0.45mm 0.45mm 0.45mm;
+        }
+
+        @media print {
+        #print-button {
+            display: none;
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            padding: 5px;
+            background: linear-gradient(to bottom, #d2edbf, #a49696); /* Example gradient */
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 5px 0;
+            max-width: auto;
+            color: #0457be; /* Centering h1 color */
+        }
+        h2 {
+            color: #0457be;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
-    <h1>Generate Reports</h1>
+    <h1>انشاء التقارير</h1>
+    <br>
+    <form method="GET" action="{% url 'generate_reports' %}">
+        <table id="table1">
+            <tr>
+                <td><label for="start_date">تاريخ البداية:</label></td>
+                <td><input type="date" id="start_date" name="start_date" placeholder="YYYY-MM-DD" required></td>
+                <td><label for="end_date">تاريخ النهاية:</label></td>
+                <td><input type="date" id="end_date" name="end_date" placeholder="YYYY-MM-DD" required></td>
+                <td><label for="admission_department">قسم الادخال:</label></td>
+                <td><select id="admission_department" name="admission_department">
+                    <option value="">جميع الأقسام</option>
+                    </select></td>
+                <td><label for="service_type">نوع الخدمة:</label></td>
+                <td><select id="service_type" name="service_type">
+                    <option value="">جميع الخدمات</option>
+                </select></td>
+                <td><button type="submit">استعلام</button></td>
+            </tr>
+        </table>
+    </form>
+
+    <h2>الملخص:</h2>
+    <table>
+        <tr>
+            <th>البيان</th>
+            <th>القيمة</th>
+        </tr>
+        <tr>
+            <td>إجمالي المرضى</td>
+            <td>{{ total_patients }}</td>
+        </tr>
+        <tr>
+            <td>عدد المرضى الذكور</td>
+            <td>{{ male_patients }}</td>
+        </tr>
+        <tr>
+            <td>عدد المرضى الإناث</td>
+            <td>{{ female_patients }}</td>
+        </tr>
+        <tr>
+            <td>متوسط مدة الاقامة</td>
+            <td>{{ average_length_of_stay.average_length }} يوم</td>
+        </tr>
+        <tr>
+            <td>نسبة إعادة الإدخال</td>
+            <td>{{ readmission_rate }}%</td>
+        </tr>
+    </table>
+        <h2> </h2>
+        <table>
+        <tr>
+            <th>حالة الخروج</th>
+            <th>العدد</th>
+        </tr>
+        {% for status, count in discharge_statuses.items %}
+            <tr>
+                <td>{{ status }}</td>
+                <td>{{ count }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td>أكثر الإجراءات شيوعًا</td>
+            <td>{{ most_common_procedures }}</td>
+        </tr>
+    </table>
+
+    <h2>توزيع الأعمار:</h2>
+    <table>
+        <tr>
+            <th>الفئة العمرية</th>
+            <th>العدد</th>
+        </tr>
+        {% for age_group, count in age_groups.items %}
+            <tr>
+                <td>{{ age_group }}</td>
+                <td>{{ count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2>توزيع الحالات:</h2>
+    <table>
+        <tr>
+            <th>الحالة</th>
+            <th>العدد</th>
+        </tr>
+        {% for item in initial_diagnosis_distribution %}
+            <tr>
+                <td>{{ item.initial_diagnosis }}</td>
+                <td>{{ item.count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2>تفاصيل المرضى:</h2>
     <table>
         <thead>
             <tr>
-                <th>Patient ID</th>
-                <th>Full Name</th>
-
+                <th>رقم المريض</th>
+                <th>الاسم الكامل</th>
+                <th>رقم المريض</th>
+                <th>الاسم الكامل</th>
+                <th>تاريخ الميلاد</th>
+                <th>الجنس</th>
+                <th>تاريخ الدخول</th>
+                <th>تاريخ الخروج</th>
+                <th>التشخيص الأولي</th>
+                <th>حالة الخروج</th>
+                <!-- Add more columns for other details if needed -->
             </tr>
         </thead>
         <tbody>
             {% for patient in patients %}
-            <tr>
-                <td>{{ patient.id }}</td>
-                <td>{{ patient.full_name }}</td>
-
-            </tr>
+                <tr>
+                    <td>{{ patient.id }}</td>
+                    <td>{{ patient.full_name }}</td>
+                    <td>{{ patient.id }}</td>
+                    <td>{{ patient.full_name }}</td>
+                    <td>{{ patient.date_of_birth }}</td>
+                    <td>{{ patient.gender }}</td>
+                    <td>{{ patient.admission_date }}</td>
+                    <td>{{ patient.discharge_date }}</td>
+                    <td>{{ patient.initial_diagnosis }}</td>
+                    <td>{{ patient.discharge_status }}</td>
+                    <!-- Add more columns for other details if needed -->
+                </tr>
             {% endfor %}
         </tbody>
     </table>
+    <button onclick="window.print()" id="print-button">Print Page</button>
+
 </body>
 </html>

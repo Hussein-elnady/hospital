@@ -1,12 +1,15 @@
 from django.db import models
 from lib.national_id import NationalID
+from django.core.validators import RegexValidator
+
+national_number_regex = RegexValidator(r"^\d{14}$", "National ID must be 14 digits")
 
 
 class Patient(models.Model):
     full_name = models.CharField(max_length=255)
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=10, choices=[('male', 'ذكر'), ('female', 'أنثى')])
-    national_number = models.CharField(max_length=20)
+    national_number = models.CharField(max_length=14, validators=[national_number_regex])
     insurance_number = models.CharField(max_length=20)
     admission_number = models.CharField(max_length=20)
     social_status = models.CharField(max_length=20,
@@ -68,14 +71,19 @@ class Patient(models.Model):
 
     def fetch_info_from_national_id(self, national_id):
         instance = NationalID(national_id)
-        success, info = instance.get_info()
-        if success:
-            self.date_of_birth = f"{info['year_of_birth']}-{info['month_of_birth']}-{info['day_of_birth']}"
-            self.governorate = info['governorate']
-            # You can extract and assign other fields similarly
-            self.save()
-            return True
-        else:
+        try:
+            success, info = instance.get_info()
+            if success:
+                self.date_of_birth = f"{info['year_of_birth']}-{info['month_of_birth']}-{info['day_of_birth']}"
+                self.governorate = info['governorate']
+                # You can extract and assign other fields similarly
+                self.save()
+                return True
+            else:
+                return False
+        except Exception as e:
+            # Handle exceptions gracefully
+            print(f"An error occurred while fetching info from national ID: {e}")
             return False
 
     def save(self, *args, **kwargs):

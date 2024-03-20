@@ -1,13 +1,18 @@
 # views.py
 
+# Django core imports
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
+
+# Model and queryset imports
 from .forms import PatientForm
 from .models import Patient
-import datetime
 
-from lib.national_id import NationalID
+# Date and time functionality
+from datetime import date, datetime, timedelta
+from django.db.models import Count, Avg, Max, Min
+from django.utils.translation import gettext as _
 
 
 @login_required
@@ -137,23 +142,85 @@ def admission_home(request):
     return redirect('register_patient')  # Redirect to patient registration page or any other relevant page
 
 
-@login_required
-def record_patient_data(request):
-    if request.method == 'POST':
-        form = PatientForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('record_patient_success')
-    else:
-        form = PatientForm()
-    return render(request, 'admission/record_patient_form.html', {'form': form})
-
-
-@login_required
 def generate_reports(request):
-    patients = Patient.objects.all()  # Example: Fetch all patients from the database
+    # Retrieve data based on user-selected filters
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    patients = Patient.objects.filter(admission_date__range=[start_date, end_date])
 
-    return render(request, 'admission/generate_reports.html', {'patients': patients})
+    # Calculate additional statistics
+    total_patients = patients.count()
+    male_patients = patients.filter(gender='Male').count()
+    female_patients = patients.filter(gender='Female').count()
+
+    # Diagnosis Distribution
+    initial_diagnosis_distribution = patients.values('initial_diagnosis').annotate(count=Count('initial_diagnosis'))
+
+    # Length of Stay Analysis
+    average_length_of_stay = patients.aggregate(average_length=Avg('length_of_stay'),
+                                                min_length=Min('length_of_stay'),
+                                                max_length=Max('length_of_stay'))
+
+    # Readmission Rates (Example: within 30 days)
+    thirty_days_ago = datetime.now() - timedelta(days=30)
+    readmitted_patients = patients.filter(discharge_date__gte=thirty_days_ago).exclude(previous_admission=None)
+    readmission_rate = (readmitted_patients.count() / total_patients) * 100 if total_patients != 0 else 0
+
+    # Demographic Breakdown
+    today = date.today()
+    age_groups = {
+        '0-18': patients.filter(date_of_birth__gte=today.replace(year=today.year - 18)).count(),
+        '19-35': patients.filter(
+            date_of_birth__range=(today.replace(year=today.year - 35), today.replace(year=today.year - 19))).count(),
+        '36-50': patients.filter(
+            date_of_birth__range=(today.replace(year=today.year - 50), today.replace(year=today.year - 36))).count(),
+        '51+': patients.filter(date_of_birth__lt=today.replace(year=today.year - 51)).count(),
+    }
+
+    # Insurance Coverage Analysis
+    insurance_coverage = patients.exclude(insurance_number='').count()
+    uninsured_patients = total_patients - insurance_coverage
+
+    # Admission Department Analysis
+    admission_departments = patients.values('admission_department').annotate(count=Count('admission_department'))
+
+    # Room Grade Utilization
+    room_grade_utilization = patients.values('room_grade').annotate(count=Count('room_grade'))
+
+    # Discharge Status Distribution
+    discharge_statuses = patients.values('discharge_status').annotate(count=Count('discharge_status'))
+
+    # Service Type Breakdown
+    service_types = patients.values('service_type').annotate(count=Count('service_type'))
+
+    # Operation Procedures Analysis
+    operation_procedures = patients.values('operation_procedures').annotate(count=Count('operation_procedures'))
+
+    # Autopsy Rate Calculation
+    autopsy_rate = (patients.filter(autopsy=True).count() / total_patients) * 100 if total_patients != 0 else 0
+
+    # Geographical Analysis
+    geographical_distribution = patients.values('governorate').annotate(count=Count('governorate'))
+
+    return render(request, 'admission/generate_reports.html', {
+        'total_patients': total_patients,
+        'male_patients': male_patients,
+        'female_patients': female_patients,
+        'initial_diagnosis_distribution': initial_diagnosis_distribution,
+        'average_length_of_stay': average_length_of_stay,
+        'readmission_rate': readmission_rate,
+        'age_groups': age_groups,
+        'insurance_coverage': insurance_coverage,
+        'uninsured_patients': uninsured_patients,
+        'admission_departments': admission_departments,
+        'room_grade_utilization': room_grade_utilization,
+        'discharge_statuses': discharge_statuses,
+        'service_types': service_types,
+        'operation_procedures': operation_procedures,
+        'autopsy_rate': autopsy_rate,
+        'geographical_distribution': geographical_distribution,
+        'patients': patients,
+    })
 
 
 @login_required
