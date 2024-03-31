@@ -1,0 +1,138 @@
+@page {
+    size: 10in 15in;
+    margin: 0.45mm 0.45mm 0.45mm 0.45mm;
+}
+
+@media print {
+#print-button,
+#submit {
+    display: none;
+    }
+}
+
+body {
+    font-family: sans-serif;
+    font-size: 12px;
+    margin: 0;
+}
+
+.container {
+    background: linear-gradient(to bottom, #f0f0f0, #e0e0e0); /* Example gradient */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    max-width: 1100px;
+}
+
+h1 {
+    text-align: center;
+    padding: 5px;
+    background: linear-gradient(to bottom, #d2edbf, #a49696); /* Example gradient */
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 5px 0;
+    max-width: auto;
+    color: #0457be; /* Centering h1 color */
+}
+
+#table1 {
+    border: none;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+#table1 td {
+    padding: 5px;
+    }
+
+#table1 img {
+    width: 80px;
+    height: 80px;
+}
+
+#table1 td:first-child {
+    width: 40%;
+}
+
+#table1 td:nth-child(2) {
+    width: 20%;
+}
+
+#table1 td:last-child {
+    width: 40%;
+}
+
+#table2 {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    font-size: 12px;
+    text-align: center;
+}
+
+#table2 td {
+    padding: 5px;
+    }
+
+#table2 tr {
+    height: calc(1px / 1);
+}
+
+#table2 td:nth-child(1) { /* Target all child cells */
+    width: calc(25% - 4px); /* Calculate width based on total columns and padding */
+}
+
+/* Style for labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    width: calc(85px - 12px);
+}
+
+/* Style for inputs */
+input[type="text"],
+input[type="date"],
+input[type="time"],
+select {
+    width: calc(155px - 12px); /* Adjust width to fit the container */
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+/* Style for submit button */
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 10%;
+    margin-top: 10px;
+}
+
+/* Style for submit button on hover */
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+@media screen and (min-width: 600px) {
+    .container{
+        padding: 10px;
+    }
+}
+
+@media print {
+body {
+color: black; /* Set text color to black */
+background-color: white; /* Set background color to white */
+}
+}

@@ -1,29 +1,43 @@
-# views.py
-
-# Django core imports
+from django.db import transaction
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-
-# Model and queryset imports
-from .forms import PatientForm
 from .models import Patient
+from .forms import PatientForm
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 # Date and time functionality
 from datetime import date, datetime, timedelta
 from django.db.models import Count, Avg, Max, Min
-from django.utils.translation import gettext as _
+from dateutil.relativedelta import relativedelta
+from django.db.models import Q
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('main_page')
+        else:
+            error_message = "Invalid username or password."
+            return render(request, 'admission/login.html', {'error_message': error_message})
+    return render(request, 'admission/login.html')
 
 
 @login_required
 def patient_registration(request):
     if request.method == 'POST':
+        # Extract data from POST request
         full_name = request.POST.get('full_name')
         date_of_birth = request.POST.get('date_of_birth')
         gender = request.POST.get('gender')
         national_number = request.POST.get('national_number')
         insurance_number = request.POST.get('insurance_number')
-        admission_number = request.POST.get('admission_number')
         social_status = request.POST.get('social_status')
         religion = request.POST.get('religion')
         profession = request.POST.get('profession')
@@ -51,97 +65,160 @@ def patient_registration(request):
         initial_diagnosis = request.POST.get('initial_diagnosis')
         admission_date = request.POST.get('admission_date')
         admission_time = request.POST.get('admission_time')
+
+        # Calculate length of stay if discharge information is available
         discharge_date = request.POST.get('discharge_date')
         discharge_time = request.POST.get('discharge_time')
-        length_of_stay = request.POST.get('length_of_stay')
-        final_diagnosis = request.POST.get('final_diagnosis')
-        associated_diagnosis = request.POST.get('associated_diagnosis')
-        service_type = request.POST.get('service_type')
-        operation_procedures = request.POST.get('operation_procedures')
-        autopsy = request.POST.get('autopsy')
-        discharge_status = request.POST.get('discharge_status')
-        discharge_destination = request.POST.get('discharge_destination')
 
-        patient = Patient(full_name=full_name,
-                          date_of_birth=date_of_birth,
-                          gender=gender,
-                          national_number=national_number,
-                          insurance_number=insurance_number,
-                          admission_number=admission_number,
-                          social_status=social_status,
-                          religion=religion,
-                          profession=profession,
-                          employer=employer,
-                          address=address,
-                          city_village=city_village,
-                          governorate=governorate,
-                          phone_number=phone_number,
-                          emergency_contact_name=emergency_contact_name,
-                          emergency_contact_relationship=emergency_contact_relationship,
-                          emergency_contact_address=emergency_contact_address,
-                          emergency_contact_phone_number=emergency_contact_phone_number,
-                          insurance_provider_contact_name=insurance_provider_contact_name,
-                          insurance_provider_relationship=insurance_provider_relationship,
-                          insurance_provider_address=insurance_provider_address,
-                          insurance_provider_phone_number=insurance_provider_phone_number,
-                          admitted_by=admitted_by,
-                          accident_location=accident_location,
-                          police_report=police_report,
-                          previous_admission=previous_admission,
-                          treating_physician=treating_physician,
-                          admission_department=admission_department,
-                          room=room,
-                          room_grade=room_grade,
-                          initial_diagnosis=initial_diagnosis,
-                          admission_date=admission_date,
-                          admission_time=admission_time,
-                          discharge_date=discharge_date,
-                          discharge_time=discharge_time,
-                          length_of_stay=length_of_stay,
-                          final_diagnosis=final_diagnosis,
-                          associated_diagnosis=associated_diagnosis,
-                          service_type=service_type,
-                          operation_procedures=operation_procedures,
-                          autopsy=autopsy,
-                          discharge_status=discharge_status,
-                          discharge_destination=discharge_destination
-                          )
+        # Calculate length of stay if discharge information is available
 
-        patient.save()
-        return render(request, 'admission/success.html')
-    return render(request, 'admission/pt_register.html')
-
-
-def success_view(request):
-    return render(request, 'admission/success.html')
-
-
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('main_page')
+        length_of_stay = None
+        if discharge_date and discharge_time and admission_date and admission_time:
+            try:
+                admission_date_obj = timezone.datetime.strptime(admission_date, '%Y-%m-%d').date()
+                discharge_date_obj = timezone.datetime.strptime(discharge_date, '%Y-%m-%d').date()
+                length_of_stay = (discharge_date_obj - admission_date_obj).days
+            except ValueError:
+                raise ValidationError('Invalid date format for discharge date or admission date')
         else:
-            error_message = "Invalid username or password."
-            return render(request, 'admission/login.html', {'error_message': error_message})
-    return render(request, 'admission/login.html')
+            # If discharge information is not available, set length_of_stay to None
+            length_of_stay = None
+
+        # Calculate age
+        if date_of_birth:
+            date_of_birth_obj = datetime.strptime(date_of_birth, '%Y-%m-%d')
+            today = timezone.now()
+            age = relativedelta(today, date_of_birth_obj).years
+        else:
+            age = None
+
+        # Get the time of registration
+        time_of_registration = timezone.now()
+
+        # Get the last admission number
+        last_admission_number = Patient.objects.aggregate(Max('admission_number'))['admission_number__max']
+        if last_admission_number:
+            last_admission_number_str = str(last_admission_number)
+            serial_number = int(last_admission_number_str.split('-')[-1]) + 1
+            new_admission_number = f"{serial_number:04d}"
+        else:
+            new_admission_number = "0001"
+
+        # Assign new admission number to the patient
+        Patient.admission_number = new_admission_number
+
+        # Create the Patient instance with the extracted data
+        patient = Patient(
+            full_name=full_name,
+            date_of_birth=date_of_birth,
+            age=age,
+            gender=gender,
+            national_number=national_number,
+            insurance_number=insurance_number,
+            admission_number=new_admission_number,
+            social_status=social_status,
+            religion=religion,
+            profession=profession,
+            employer=employer,
+            address=address,
+            city_village=city_village,
+            governorate=governorate,
+            phone_number=phone_number,
+            emergency_contact_name=emergency_contact_name,
+            emergency_contact_relationship=emergency_contact_relationship,
+            emergency_contact_address=emergency_contact_address,
+            emergency_contact_phone_number=emergency_contact_phone_number,
+            insurance_provider_contact_name=insurance_provider_contact_name,
+            insurance_provider_relationship=insurance_provider_relationship,
+            insurance_provider_address=insurance_provider_address,
+            insurance_provider_phone_number=insurance_provider_phone_number,
+            admitted_by=admitted_by,
+            accident_location=accident_location,
+            police_report=police_report,
+            previous_admission=previous_admission,
+            treating_physician=treating_physician,
+            admission_department=admission_department,
+            room=room,
+            room_grade=room_grade,
+            initial_diagnosis=initial_diagnosis,
+            admission_date=admission_date,
+            admission_time=admission_time,
+            discharge_date=discharge_date,
+            discharge_time=discharge_time,
+            length_of_stay=length_of_stay,
+            time_of_registration=time_of_registration
+        )
+
+        # Save the patient object
+        patient.save()
+
+        # Store patient ID in session for later use
+        request.session['patient_id'] = patient.pk
+
+        return render(request, 'admission/success.html')
+
+    return render(request, 'admission/patient_form.html')
+
+
+@login_required
+def success_view(request):
+    # Redirect to main page after displaying success message
+    return redirect('main_page')
+
+
+@login_required
+def patient_update(request, pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    if request.method == 'POST':
+        form = PatientForm(request.POST, instance=patient)
+        if form.is_valid():
+            form.save()
+            return redirect('patient_list')
+    else:
+        form = PatientForm(instance=patient)
+    return render(request, 'admission/patient_form.html', {'form': form})
+
+
+@login_required
+def patient_list(request):
+    patients = Patient.objects.all()
+    return render(request, 'admission/patient_list.html', {'patients': patients})
+
+
+@login_required
+def patient_detail(request, pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    return render(request, 'admission/patient_detail.html', {'patient': patient})
+
+
+@login_required
+def patient_delete(request, pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    if request.method == 'POST':
+        patient.delete()
+        return redirect('patient_list')
+    return render(request, 'admission/patient_confirm_delete.html', {'patient': patient})
 
 
 @login_required
 def main_page(request):
-    if request.user.is_superuser:  # Check if user is admin
-        return render(request, 'admission/main.html', {'admin': True})
-    else:
-        return render(request, 'admission/main.html', {'admin': False})
+    # Retrieve last 5 admitted patients
+    recent_admitted_patients = Patient.objects.filter(
+        Q(discharge_date__isnull=True) | Q(length_of_stay__isnull=True)
+    ).order_by('-admission_date')[:5]
+
+    # Retrieve last 5 discharged patients
+    recent_discharged_patients = Patient.objects.exclude(
+        Q(discharge_date__isnull=True) | Q(length_of_stay__isnull=True)
+    ).order_by('-discharge_date')[:5]
+
+    return render(request, 'admission/main.html', {
+        'recent_admitted_patients': recent_admitted_patients,
+        'recent_discharged_patients': recent_discharged_patients
+    })
 
 
-def admission_home(request):
-    return redirect('register_patient')  # Redirect to patient registration page or any other relevant page
-
-
+@login_required
 def generate_reports(request):
     # Retrieve data based on user-selected filters
     start_date = request.GET.get('start_date')
@@ -230,3 +307,11 @@ def search_patient(request):
     patients = Patient.objects.filter(full_name__icontains=query)  # Example: Search patients by name
 
     return render(request, 'admission/search_patient.html', {'patients': patients, 'query': query})
+
+
+@login_required
+def print_preview(request, pk):
+    # Fetch data for a specific patient from the database
+    patient = get_object_or_404(Patient, pk=pk)
+
+    return render(request, 'admission/print_preview.html', {'patient': patient})

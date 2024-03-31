@@ -1,143 +1,19 @@
 <!DOCTYPE html>
 {% load static %}
+{% if admission_number %}
+    <p>Admission Number: {{ admission_number }}</p>
+{% endif %}
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مكتب الدخول</title>
-    <style>
-        @page {
-            size: 10in 15in;
-            margin: 0.45mm 0.45mm 0.45mm 0.45mm;
-        }
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/patient_form.css' %}">
 
-        @media print {
-        #print-button,
-        #submit {
-            display: none;
-            }
-        }
-
-        body {
-            font-family: sans-serif;
-            font-size: 12px;
-            margin: 0;
-        }
-
-        .container {
-            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0); /* Example gradient */
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            margin: 0 auto;
-            max-width: 1100px;
-        }
-
-        h1 {
-            text-align: center;
-            padding: 5px;
-            background: linear-gradient(to bottom, #d2edbf, #a49696); /* Example gradient */
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            margin: 5px 0;
-            max-width: auto;
-            color: #0457be; /* Centering h1 color */
-        }
-
-        #table1 {
-            border: none;
-            width: 100%;
-            text-align: center;
-            font-size: 12px;
-            font-weight: bold;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
-
-        #table1 td {
-            padding: 5px;
-            }
-
-        #table1 img {
-            width: 80px;
-            height: 80px;
-        }
-
-        #table1 td:first-child {
-            width: 40%;
-        }
-
-        #table1 td:nth-child(2) {
-            width: 20%;
-        }
-
-        #table1 td:last-child {
-            width: 40%;
-        }
-
-        #table2 {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-            font-size: 12px;
-
-        }
-
-        #table2 td {
-            padding: 5px;
-            }
-
-        #table2 tr {
-            height: calc(1px / 1);
-        }
-
-        #table2 td:nth-child(1) { /* Target all child cells */
-            width: calc(25% - 4px); /* Calculate width based on total columns and padding */
-        }
-
-        /* Style for labels */
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        /* Style for inputs */
-        input[type="text"],
-        input[type="date"],
-        select {
-            width: calc(100% - 12px); /* Adjust width to fit the container */
-            padding: 6px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-        }
-
-        /* Style for submit button */
-        button[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 10%;
-            margin-top: 10px;
-        }
-
-        /* Style for submit button on hover */
-        button[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        @media screen and (min-width: 600px) {
-            .container{
-                padding: 10px;
-            }
-        }
-    </style>
 </head>
 <body>
+<div class="container1">
     <table id="table1">
         <tr>
           <td>وزارة الصحة والسكان</td>
@@ -152,6 +28,7 @@
           <td rowspan="2">الرقم الطبي: ....................................................</td>
         </tr>
       </table>
+</div>
 
     <div class="container">
         <h1>صحيفة دخول وخروج</h1>
@@ -163,21 +40,19 @@
                     <td><label for="full_name">الاسم رباعي:</label></td>
                     <td><input type="text" name="full_name" id="full_name" required></td>
                     <td><label for="date_of_birth" >تاريخ الميلاد:</label></td>
-                   <td><input type="date" id="date_of_birth" name="date_of_birth" placeholder="YYYY-MM-DD" required></td>
+                   <td><input type="text" id="date_of_birth" name="date_of_birth" value="{{ patient.date_of_birth}}" readonly></td>
                     <td><label for="gender">النوع:</label></td>
-                    <td><select name="gender" id="gender" required>
-                        <option value=""></option>
-                        <option value="male">ذكر</option>
-                        <option value="female">أنثى</option>
-                    </select></td>
+                    <td><input type="text" id="gender" name="gender" value="{{ patient.gender}}" readonly></td>
                     <td><label for="national_number">الرقم القومي:</label></td>
-                    <td><input type="text" name="national_number" id="national_number"></td>
+                    <td><input type="text" name="national_number" id="national_number" pattern="[0-9]{14}" required title="يرجى إدخال رقم قومي مكون من 14 رقمًا"></td>
                 </tr>
                 <tr>
+                    <td><label for="age">العمر:</label></td>
+                    <td><input type="text" name="age" id="age" value="{{ patient.age }}" readonly></td>
                     <td><label for="insurance_number">الرقم التأميني:</label></td>
                     <td><input type="text" name="insurance_number" id="insurance_number"></td>
                     <td><label for="admission_number">رقم الدخول:</label></td>
-                    <td><input type="text" name="admission_number" id="admission_number"></td>
+                    <td><input type="text" name="admission_number" id="admission_number" value="{{ form.instance.admission_number }}" readonly></td>
                 </tr>
                 <tr>
                     <td><label for="social_status">الحالة الاجتماعية:</label></td>
@@ -290,21 +165,18 @@
 
                 <tr>
                     <td><label for="admission_date">تاريخ الدخول:</label></td>
-                    <td><input type="date" name="admission_date" id="admission_date" placeholder="YYYY-MM-DD" required></td>
-
+                    <td><input type="date" name="admission_date" id="admission_date" ></td>
                     <td><label for="admission_time">الساعة:</label></td>
-                    <td><input type="time" name="admission_time" id="admission_time"></td>
-
+                    <td><input type="time" name="admission_time" id="admission_time" ></td>
                     <td><label for="discharge_date">تاريخ الخروج:</label></td>
-                    <td><input type="date" name="discharge_date" id="discharge_date" placeholder="YYYY-MM-DD" required></td>
-
+                    <td><input type="date" name="discharge_date" id="discharge_date"></td>
                     <td><label for="discharge_time">الساعة:</label></td>
                     <td><input type="time" name="discharge_time" id="discharge_time"></td>
                 </tr>
 
                 <tr>
                     <td><label for="length_of_stay">مدة الإقامة:</label></td>
-                    <td><input type="number" name="length_of_stay" id="length_of_stay"></td>
+                    <td><input type="text" name="length_of_stay" id="length_of_stay" value="{{ patient.length_of_stay }}" readonly></td>
                 </tr>
 
                 <tr>
@@ -338,8 +210,8 @@
                 </tr>
 
                 <tr>
-                    <td colspan="2" style="text-align: center;"><label for="service_type">نوع الخدمة:</label></td>
                     <td></td>
+                    <td colspan="2" style="text-align: center;"><label for="service_type">نوع الخدمة:</label></td>
                     <td colspan="5" ><textarea style="width: 100%" rows="2" name="associated_diagnosis" id="associated_diagnosis"></textarea></td>
                 </tr>
 
@@ -358,17 +230,15 @@
                 </tr>
 
                 <tr>
-                    <td colspan="2" style="text-align: center;"></td>
-                    <td></td>
+                    <td colspan="3"></td>
                     <td colspan="5" ><textarea style="width: 100%" rows="2" name="operation_procedures" id="operation_procedures"></textarea></td>
                 </tr>
 
                 <tr>
-                    <td colspan="2" style="text-align: center;">Autopsy</td>
-                    <td></td>
-                    <td colspan="2"><label for="discharge_status">الحالة عند الخروج:</label></td>
-
-                    <td colspan="2"><label for="discharge_destination">خروج إلى:</label></td>
+                    <td colspan="2">Autopsy</td>
+                    <td colspan="1"></td>
+                    <td colspan="2">الحالة عند الخروج:</td>
+                    <td colspan="2">خروج إلى:</td>
                 </tr>
 
                 <tr>
@@ -377,7 +247,7 @@
                         <option value="yes">نعم</option>
                         <option value="No">لا</option>
                     </select></td>
-                    <td></td>
+                    <td colspan="1"></td>
                     <td colspan="2"><select name="discharge_status" id="discharge_status">
                         <option value=""></option>
                         <option value="recovery">شفاء</option>
@@ -399,6 +269,7 @@
     </div>
     <BR>
     <BR>
+<div>
     <table id="table1">
         <tr>
           <td>اعتماد الطبيب للخروج</td>
@@ -417,8 +288,9 @@
             <td>التاريخ: .................... الوقت: ....................</td>
         </tr>
       </table>
+</div>
 
-    <button type="button" id="print-button">Print Page</button>
+    <button onclick="window.print()" id="print-button">Print Page</button>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
