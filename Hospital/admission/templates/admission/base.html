@@ -1,36 +1,75 @@
 <!-- base.html -->
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Hospital Management System{% endblock %}</title>
-    <!-- Include any CSS files or define CSS styles here -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Include CSS and other resources -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <!-- Additional CSS styles -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+    
+      .navbar {
+        background-image: linear-gradient(to right, #2980b9, #6dd5fa);
+        /* Gradient background for navbar */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+    
+      .navbar-brand,
+      .nav-link {
+        color: #fff;
+        /* Text color for navbar elements */
+      }
+    
+      .nav-link:hover {
+        color: #f0f0f0;
+        /* Text hover color for nav links */
+      }
+    </style>
 </head>
 <body>
-    <header>
-        <!-- Header content goes here -->
-        <h1>Hospital Management System</h1>
-        <nav>
-            <!-- Navigation links go here -->
-            <ul>
-                <li><a href="{% url 'main_page' %}">Home</a></li>
-                <li><a href="{% url 'about_page' %}">About</a></li>
-                <!-- Add more navigation links as needed -->
-            </ul>
-        </nav>
-    </header>
-    
-    <main>
-        <!-- Main content goes here -->
-        {% block content %}
-        {% endblock %}
-    </main>
 
-    <footer>
-        <!-- Footer content goes here -->
-        <p>&copy; 2024 Hospital Management System</p>
-    </footer>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="{% url 'main_page' %}">Hospital Management System</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'patient_list' %}">Patients</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admission_list' %}">Admissions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'discharge_list' %}">Discharges</a>
+      </li>
+    </ul>
+    
+  </div>
+</nav>
+
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<!-- Include Bootstrap JS and other scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

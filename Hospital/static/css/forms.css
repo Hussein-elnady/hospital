@@ -1,0 +1,76 @@
+/* Add your custom CSS styles here */
+
+/* Container styles */
+.container {
+  max-width: 1400px;
+  margin: 10px auto;
+  background-image: linear-gradient(to bottom, #e0e4e8, #d3d7de); 
+  padding: 1rem; 
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 13px;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px;
+}
+
+th,
+td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  max-width: 200px;
+}
+
+th {
+  text-align: center;
+  background-image: linear-gradient(to right, #2980b9, #6dd5fa); 
+  color: #050000; 
+}
+
+td {
+  vertical-align: middle;
+}
+
+/* Form styles */
+label {
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+
+textarea{
+  width: 100%;
+  padding: 2px;  
+  box-sizing: border-box;
+  max-height: 50px;  
+}
+
+/* Submit button styles */
+button[type="submit"] {
+  background-image: linear-gradient(to bottom, #4a90e2, #378de5);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 30%;
+  margin-top: 20px;
+}
+
+button[type="submit"]:hover {
+  background-image: linear-gradient(to bottom, #378de5, #4a90e2);
+}

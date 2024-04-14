@@ -1,99 +1,67 @@
-/* Common CSS styles */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-.container {
-  background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  margin: 0 auto;
-  max-width: 1100px;
-}
-.heading {
-  text-align: center;
-  margin-bottom: 50px;
-}
-.navigation {
-  margin-bottom: 50px;
-}
-.navigation ul {
-  list-style-type: none;
-  padding: 10px;
-  margin: 20px;
-}
-.navigation li {
-  display: inline;
-  margin-right: 10px;
+  /* Navigation styles */
+  .navigationli ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+    margin-top: 50px;
 }
 
-.recent-patients {
-  margin-bottom: 20px;
-}
-.recent-patients table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-  direction: rtl;
-}
-.recent-patients th, .recent-patients td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: right;
-}
-.recent-patients th {
-  background-color: #4CAF50;
-  color: white;
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-}
-.actions {
-  margin-top: 20px;
-}
-.recent-patients .actions a {
-  color: #3f51b5;
-}
-.help-support {
-  text-align: center;
-  margin-top: 30px;
-}
-.help-support a {
-  text-decoration: none;
-  color: #333;
-  margin: 0 10px;
+.navigationli ul li {
+    display: inline-block;
+    margin-bottom: 0;
 }
 
-/* Navigation styles */
-ul {
-  list-style-type: none;
-  padding: 0;
-  text-align: center;
-  margin-top: 50px;
+.navigationli ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    background-color: #2980b9;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    direction: rtl;
+    /* Set text direction to right-to-left for Arabic text */
 }
 
-ul li {
-  display: inline-block;
-  margin-bottom: 0;
+.navigationli ul li a:hover {
+    background-color: #6dd5fa;
 }
 
-ul li a {
-  text-decoration: none;
-  color: #fff;
-  font-size: 20px;
-  padding: 10px 20px;
-  border-radius: 25px;
-  background-color: #2980b9;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  display: inline-block;
-  direction: rtl; /* Set text direction to right-to-left for Arabic text */
+.recent-records {
+margin-top: 20px;
 }
 
-ul li a:hover {
-  background-color: #6dd5fa;
+.recent-records table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.rec
+.recent-records th,
+.recent-records td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.recent-records th {
+    background-color: #73afee;
+}
+
+.recent-records tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.recent-records tbody tr:hover {
+    background-color: #ddd;
+}
+
+.recent-records p {
+    font-style: italic;
+    color: #888;
+}
+
+.recent-records h2 {
+    margin-bottom: 10px;
+}

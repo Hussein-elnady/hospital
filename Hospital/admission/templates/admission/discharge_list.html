@@ -1,0 +1,80 @@
+{% extends 'admission/base.html' %}
+
+{% block title %}Discharge List{% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        max-width: 1400px;
+        margin: 10px auto;
+        background-image: linear-gradient(to bottom, #e0e4e8, #d3d7de);
+        padding: 1rem;
+        border-radius: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 13px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px;
+    }
+
+    th,
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        text-align: center;
+        background-color: #5fafc3;
+        font-weight: bold;
+    }
+
+    td {
+        vertical-align: middle;
+    }
+</style>
+
+<h1>Discharge List</h1>
+
+<table class="container">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Admission Number</th>
+            <th>Discharge Date</th>
+            <th>Discharge Time</th>
+            <th>Length of Stay (Days)</th>
+            <th>Discharge Status</th>
+            <th>Discharge Destination</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for discharge in discharges %}
+
+        <tr>
+            <td>{{ discharge.admission_number.patient.full_name }}</td>
+            <td>{{ discharge.admission_number.admission_number }}</td>
+            <td>{{ discharge.discharge_date }}</td>
+            <td>{{ discharge.discharge_time }}</td>
+            <td>{{ discharge.length_of_stay }}</td>
+            <td>{{ discharge.discharge_status }}</td>
+            <td>{{ discharge.discharge_destination }}</td>
+            <td>                
+                <a href="{% url 'discharge_edit' admission_pk=discharge.admission_number.pk %}">Edit</a> |
+                <a href="{% url 'discharge_delete' admission_pk=discharge.admission_number.pk %}">Delete</a>
+            </td>
+        </tr>
+
+
+        {% endfor %}
+    </tbody>
+
+
+
+
+{% endblock %}

@@ -22,7 +22,7 @@ body {
     text-align: right;
     direction: rtl;
     font-size: large;
-    background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+    background: linear-gradient(to bottom, z#f0f0f0, #e0e0e0);
 }
 
 /* Form styles */

@@ -1,0 +1,318 @@
+{% extends 'admission/base.html' %}
+
+{% load static %}
+
+{% block title %}صحيفة دخول وخروج - {{ admission.admission_number }}{% endblock %}
+
+{% block content %}
+<style>
+    @page {
+        size: 10in 15in;
+        margin: 0.45mm 0.45mm 0.45mm 0.45mm;
+    }
+
+    @media print {
+        #print-button {
+            display: none;
+        }
+    }
+
+    body {
+        font-family: sans-serif;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .container {
+        background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+        max-width: auto;
+        direction: rtl;
+        text-align: right;
+        font-size: 16px;
+    }
+
+    h1 {
+        text-align: center;
+        padding: 5px;
+        background: linear-gradient(to bottom, #d2edbf, #a49696);
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 5px 0;
+        max-width: auto;
+        color: #0457be;
+    }
+
+    #header,
+    #footer {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: bolder;
+    }
+
+    #header td,
+    #footer td {
+        padding: 5px;
+        text-align: center;
+    }
+
+    #header img {
+        width: 80px;
+        height: 80px;
+    }
+
+    #header td:first-child,
+    #header td:last-child {
+        width: 30%;
+    }
+
+    #header td:nth-child(2) {
+        width: 40%;
+    }
+
+    #footer td {
+        text-align: center;
+        width: 30%;
+    }
+
+    #body {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-align: right;
+        border: 2px solid #232323;
+
+    }
+
+    #body td {
+        padding: 5px;
+        width: auto;
+        border: 1px solid #232323;
+        height: 15px;
+    }
+
+    #body tr {
+        height: 45px;
+        
+    }
+
+    @media screen and (min-width: 600px) {
+        .container {
+            padding: 10px;
+        }
+    }
+
+    @media print {
+        body {
+            color: black;
+            background-color: white;
+        }
+    }
+</style>
+
+
+<div class="container">
+    <div class="admission-details">
+        <table id="header">
+            <tr>
+                <td>وزارة الصحة والسكان</td>
+                <td rowspan="3"><img src="{% static 'images/logo.jpg' %}"></td>
+                <td rowspan="2">اسم المريض: ....................................................</td>
+            </tr>
+            <tr>
+                <td>مديرية الشئون الصحية بالقليوبية</td>
+            </tr>
+            <tr>
+                <td>مستشفى أبو المنجا المركزي</td>
+                <td rowspan="2">الرقم الطبي: ....................................................</td>
+            </tr>
+        </table>
+        <h1>صحيفة دخول وخروج</h1>
+        <br>
+
+        <table id="body">
+            <tr>
+                <td><strong>الاسم رباعي:</strong></td>
+                <td>{{ admission.patient.full_name }}</td>
+                <td><strong>تاريخ الميلاد :</strong></td>
+                <td>{{ admission.patient.date_of_birth }}</td>
+                <td><strong>النوع:</strong></td>
+                <td>{{ admission.patient.gender }}</td>
+                <td><strong>الرقم القومي:</strong></td>
+                <td>{{ admission.patient.national_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>العمر:</strong></td>
+                <td>{{ admission.patient.age }}</td>
+                <td><strong> الرقم التأميني:</strong></td>
+                <td>{{ admission.patient.insurance_number }}</td>
+                <td><strong>رقم الدخول:</strong></td>
+                <td>{{ admission.admission_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>الحالة الاجتماعية:</strong></td>
+                <td>{{ admission.patient.social_status }}</td>
+                <td><strong>الديانة:</strong></td>
+                <td>{{ admission.patient.religion }}</td>
+                <td><strong>المهنة:</strong></td>
+                <td>{{ admission.patient.profession }}</td>
+                <td><strong>جهة العمل:</strong></td>
+                <td>{{ admission.patient.employer }}</td>
+            </tr>
+            <tr>
+                <td><strong>عنوان المريض:</strong></td>
+                <td>{{ admission.patient.address }}</td>
+                <td><strong>المدينة/القرية:</strong></td>
+                <td>{{ admission.patient.city_village }}</td>
+                <td><strong>المحافظة:</strong></td>
+                <td>{{ admission.patient.governorate }}</td>
+                <td><strong>رقم التليفون:</strong></td>
+                <td>{{ admission.patient.phone_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>اسم من يمكن الرجوع إليه:</strong></td>
+                <td>{{ admission.emergency_contact_name }}</td>
+                <td><strong>العلاقة:</strong></td>
+                <td>{{ admission.emergency_contact_relationship }}</td>
+                <td><strong>عنوانه:</strong></td>
+                <td>{{ admission.emergency_contact_address }}</td>
+                <td><strong>رقم التليفون:</strong></td>
+                <td>{{ admission.emergency_contact_phone_number }}</td>
+            </tr>
+            <tr>
+                <td rowspan="2"><strong>اسم المسئول عن احضار<br> موقف المريض التأميني:</strong></td>
+                <td rowspan="2">{{ admission.insurance_provider_contact_name }}</td>
+                <td><strong>العلاقة:</strong></td>
+                <td>{{ admission.insurance_provider_relationship }}</td>
+                <td><strong for="insurance_provider_address">عنوانه:</strong></td>
+                <td>{{ admission.insurance_provider_address }}</td>
+                <td><strong>رقم التليفون:</strong></td>
+                <td>{{ admission.insurance_provider_phone_number }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>التوقيع:</strong></td>
+                <td colspan="2">..........................................</td>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>حول من قبل:</strong></td>
+                <td>{{ admission.admitted_by }}</td>
+                <td><strong>حادث في:</strong></td>
+                <td>{{ admission.accident_location }}</td>
+                <td><strong>محال من الشرطة:</strong></td>
+                <td>{{ admission.police_report }}</td>
+                <td><strong>دخول سابق:</strong></td>
+                <td>{{ admission.previous_admission }}</td>
+            </tr>
+            <tr>
+                <td><strong>الطبيب المعالج <br> الأمر بالدخول:</strong></td>
+                <td>{{ admission.treating_physician }}</td>
+                <td><strong>قسم الدخول:</strong></td>
+                <td>{{ admission.admission_department }}</td>
+                <td><strong>الحجرة:</strong></td>
+                <td>{{ admission.room }}</td>
+                <td><strong>الدرجة:</strong></td>
+                <td>{{ admission.room_grade }}</td>
+            </tr>
+            <tr>
+                <td><strong>التشخيص المبدئي:</strong></td>
+                <td>{{ admission.initial_diagnosis }}</td>
+            </tr>
+            <tr>
+                <td><strong>تاريخ الدخول:</strong></td>
+                <td>{{ admission.admission_date }}</td>
+                <td><strong>الساعة:</strong></td>
+                <td>{{ admission.admission_time }}</td>
+                <td><strong>تاريخ الخروج:</strong></td>
+                <td>{{ admission.discharge.discharge_date }}</td>
+                <td><strong>الساعة:</strong></td>
+                <td>{{ admission.discharge.discharge_time }}</td>
+            </tr>
+            <tr>
+                <td><strong>مدة الإقامة:</strong></td>
+                <td>{{ admission.discharge.length_of_stay}}</td>
+            </tr>
+            <tr>
+                <td><strong>اعتماد الدخول:</strong></td>
+                <td colspan="2">..........................................</td>
+                <td><strong>التمريض:</strong></td>
+                <td colspan="2">..........................................</td>
+                <td><strong>كاتب الدخول:</strong></td>
+                <td>..........................................</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;"><strong> 11 CODE</strong></td>
+                <td rowspan="8"></td>
+                <td colspan="3"><strong>التشخيص النهائي</strong></td>
+                <td colspan="2" rowspan="2" style="text-align: left;"><strong>FINAL DIAGNOSIS</strong></td>
+            </tr>
+            <tr>
+                <td colspan="2" rowspan="2" style="text-align: center;">..........................................</td>
+                <td colspan="3">{{ admission.discharge.final_diagnosis }}</td>
+            </tr>
+
+            <tr>
+
+                <td colspan="3"><strong>التشخيصات المصاحبة</strong></td>
+                <td colspan="2" rowspan="2" style="text-align: left;"><strong>ASSOCIATED DIAGNOSIS</strong></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;"><strong>نوع الخدمة:</strong></td>
+                <td colspan="3">{{ admission.discharge.associated_diagnosis }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" rowspan="2" style="text-align: center;">{{ admission.discharge.service_type }}</td>
+                <td colspan="3"><strong>العمليات</strong></td>
+                <td colspan="2" rowspan="2" style="text-align: left;"><strong>OPERATION OR PROCEDURES</strong></td>
+            </tr>
+
+            <tr>
+                <td colspan="3">{{ admission.discharge.operation_procedures }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;"><strong>Autopsy</strong></td>
+                <td colspan="2"><strong>الحالة عند الخروج:</strong></td>
+                <td><strong>خروج إلى:</strong></td>
+                <td colspan="2" rowspan="2"></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">{{ admission.discharge.autopsy }}</td>
+                <td colspan="2">{{ admission.discharge.discharge_status }}</td>
+                <td>{{ admission.discharge.discharge_destination }}</td>
+            </tr>
+        </table>
+
+        <br>
+        <br>
+
+        <table id="footer">
+            <tr>
+                <td>اعتماد الطبيب للخروج</td>
+                <td></td>
+                <td>اعتماد مدير المستشفى للخروج</td>
+            </tr>
+            <tr>
+                <td>الاسم: ....................................................</td>
+                <td></td>
+                <td>....................................................</td>
+            </tr>
+            <tr>
+                <td>التوقيع: ....................................................</td>
+            </tr>
+            <tr>
+                <td>التاريخ: .................... الوقت: ....................</td>
+            </tr>
+        </table>
+    </div>
+
+    <button onclick="window.print()" id="print-button">Print Page</button>
+
+
+    {% endblock %}

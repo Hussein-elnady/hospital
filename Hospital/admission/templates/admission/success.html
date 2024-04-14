@@ -49,9 +49,8 @@
 <body>
   <div class="container">
     <h1>Success!</h1>
-    <p>Patient registration successful.</p>
-    <a href="{% url 'patient_registration' %}" class="btn">Register New Patient</a>
-    <a href="{% url 'main_page' %}" class="btn">العودة للصفحة الرئيسية</a>
+    <p>Patient registration successful.</p>    
+    <a href="{% url 'admission_create' patient.pk %}" class="btn">تسجيل بيانات الدخول</a>
   </div>
 </body>
 </html>

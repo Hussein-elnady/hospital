@@ -2,14 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Detail</title>
+    <title>Patient Details</title>
 </head>
 <body>
-    <h1>Patient Detail</h1>
-    <p><strong>Full Name:</strong> {{ patient.full_name }}</p>
-    <p><strong>Admission Number:</strong> {{ patient.admission_number }}</p>
-    <p><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
-    <!-- Add more patient details as needed -->
+    <h1>Patient Details</h1>
+    <h2>Patient Information</h2>
+    <ul>
+        <li>National Number: {{ patient.national_number }}</li>
+        <li>Full Name: {{ patient.full_name }}</li>
+        <li>Date of Birth: {{ patient.date_of_birth }}</li>
+        <li>Age: {{ patient.age }}</li>
+        <li>Gender: {{ patient.gender }}</li>
+        <li>Insurance Number: {{ patient.insurance_number }}</li>
+        <!-- Add more fields as needed -->
+        
+        {% if latest_discharge %}
+        <h3>Latest Discharge Information</h3>
+        <ul>
+            <li>Discharge Date: {{ latest_discharge.discharge_date }}</li>
+            <li>Length of Stay: {{ latest_discharge.length_of_stay }}</li>
+            <!-- Add more discharge fields as needed -->
+        </ul>
+        {% endif %}
+    </ul>
+
+    {% for admission in patient.admissions.all %}
+    <div class="admission-details">
+        <h4>Admission #{{ admission.admission_number }}</h4>
+        {% if admission.discharge %}
+            <h3>Discharge Details</h3>
+            <div class="discharge-details">
+                <span>Discharge Date:</span>
+                <span>{{ admission.discharge.discharge_date }}</span>
+                <span>Length of Stay:</span>
+                <span>{{ admission.discharge.length_of_stay }} days</span>
+                </div>
+        {% endif %}
+    </div>
+{% endfor %}
+
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Confirm Patient Deletion{% endblock %}
+{% block title %}Confirm Discharge Deletion{% endblock %}
 
 {% block content %}
 
@@ -68,26 +68,25 @@ a.cancel-btn:hover {
 </style>
 
 <div class="container">
-    <h1>Confirm Patient Deletion</h1>
-    <p>Are you sure you want to delete the following patient?</p>
+    <h1>Confirm Discharge Deletion</h1>
+    <p>Are you sure you want to delete the discharge details for the admission?</p>
     <table class="patient-details">
         <tbody>
             <tr>
                 <th>Full Name:</th>
-                <td>{{ patient.full_name }}</td>
+                <td>{{ admission.patient.full_name }}</td>
             </tr>
             <tr>
-                <th>National Number:</th>
-                <td>{{ patient.national_number }}</td>
+                <th>Admission Number:</th>
+                <td>{{ admission.admission_number }}</td>
             </tr>
         </tbody>
-    </table>
-    <form action="{% url 'patient_delete' patient.pk %}" method="post">
-        {% csrf_token %}
-        <input type="submit" value="Delete">
-        <a href="{% url 'patient_list' %}">Cancel</a>
+    </table>    
+    <form method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+    <a href="{% url 'admission_detail' admission.pk %}">Cancel</a>
     </form>
 </div>
-
 
 {% endblock %}

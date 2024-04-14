@@ -1,92 +1,207 @@
-<!DOCTYPE html>
-{% load static %}
+{% extends 'admission/base.html' %}
 
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الرئيسية</title>
-  <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-  <link rel="stylesheet" href="{% static 'css/main.css' %}">
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1 class="heading">الصفحة الرئيسية</h1>
-    </header>
+{% block title %}Hospital Management System - Main Page{% endblock %}
 
-    <nav class="navigation">
-      <ul>
-        <li><a href="{% url 'patient_registration' %}">تسجيل مريض جديد</a></li>
-        <li><a href="{% url 'search_patient' %}">البحث عن مريض</a></li>
-        <li><a href="{% url 'patient_list' %}">جميع المرضى</a></li>
-        <li><a href="{% url 'generate_reports' %}">انشاء تقارير</a></li>
-      </ul>
-    </nav>
+{% block content %}
+<style>
+    /* Google Font Import */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    <main>
-      <div class="recent-patients">
-        <h2>المرضى المحجوزين حديثاً</h2>
+    .container {
+        max-width: 1400px;
+        margin: 40px auto;
+    }
+
+    /* Jumbotron styles */
+    .jumbotron {
+        background-image: linear-gradient(to bottom, #f7f8fa, #e0e4e8);
+        padding: 2rem 1rem;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        color: #333;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .navigationli ul {
+        list-style-type: none;
+        padding: 0;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .navigationli ul li {
+        display: inline-block;
+        margin-bottom: 0;
+    }
+
+    .navigationli ul li a {
+        text-decoration: none;
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        border-radius: 25px;
+        background-image: linear-gradient(to right, #428bca, #5cb851);
+        transition: background-color 0.3s ease;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        display: inline-block;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .navigationli ul li a:hover {
+        background-image: linear-gradient(to right, #6dd5fa, #2980b9);
+    }
+
+    .recent-records {
+        margin-top: 20px;
+    }
+
+    .recent-records table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .recent-records th,
+    .recent-records td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .recent-records th {
+        background-color: #73afee;
+        text-align: center;
+    }
+
+    .recent-records tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .recent-records tbody tr:hover {
+        background-color: #ddd;
+    }
+
+    .recent-records p {
+        font-style: italic;
+        color: #888;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .recent-records h2 {
+        margin-bottom: 10px;
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-5">Welcome to Hospital Management System</h1>
+        <p class="lead">This is the main page of the system.</p>
+        <hr class="my-4">
+        <p>You can navigate through the system using the navigation bar above.</p>
+    </div>
+
+    <section class="navigationli">
+        <h2 class="section-heading">Navigation</h2>
+        <nav>
+            <ul>
+                <li><a href="{% url 'patient_create' %}">Create New Patient</a></li>
+
+                <!-- You can uncomment and add more navigation links here as needed -->
+            </ul>
+        </nav>
+    </section>
+
+    <section class="recent-records">
+        <!-- Recent Admitted Patients -->
+        <h2>Currently Admitted Patients</h2>
+        {% if admitted_patients %}
         <table>
-          <tr>
-            <th>الإسم بالكامل</th>  <th>رقم الدخول</th>   <th>تاريخ الدخول</th>  <th>وقت الدخول</th>  <th>الإجراءات</th>
-          </tr>
-          {% for patient in recent_admitted_patients %}
-          <tr>
-            <td>{{ patient.full_name }}</td>
-            <td>{{ patient.admission_number }}</td>
-            <td>{{ patient.admission_date }}</td>
-            <td>{{ patient.admission_time }}</td>
-            <td class="action-icons">
-              <a href="{% url 'print_preview' patient.pk %}"><img src="{% static 'images/print_icon.png' %}" alt="Print Icon" style="width: 30px; height: 30px;"></a> |
-              <a href="{% url 'patient_update' patient.pk %}"><img src="{% static 'images/edit_icon.png' %}" alt="Edit Icon" style="width: 30px; height: 30px;"></a> |
-              <a href="{% url 'patient_delete' patient.pk %}"><img src="{% static 'images/delete_icon.png' %}" alt="Delete Icon" style="width: 30px; height: 30px;"></a>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="5">لا يوجد مرضى محجوزين حديثاً</td>
-          </tr>
-          {% endfor %}
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Admission Number</th>                    
+                    <th>National ID</th>
+                    <th>Date of Birth</th>
+                    <th>Admitted By</th>
+                    <th>Admission Date</th>                  
+                    <th>Admission Department</th>
+                    <th>Room</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for admission in admitted_patients %}
+                <tr>
+                    <td>{{ admission.patient.full_name }}</td>
+                    <td>{{ admission.admission_number }}</td>                    
+                    <td>{{ admission.patient.national_number }}</td>
+                    {% if admission.patient.date_of_birth %}
+                    <td>{{ admission.patient.date_of_birth }}</td>
+                    {% else %}
+                    <td>-</td>
+                    {% endif %}
+                    <td>{{ admission.admitted_by }}</td>
+                    <td>{{ admission.admission_date }}</td>                    
+                    <td>{{ admission.admission_department }}</td>
+                    <td>{{ admission.room }}</td>
+                    <td>
+                        <a href="{% url 'admission_detail' admission.pk %}">Print</a> |
+                        <a href="{% url 'patient_edit' admission.patient.pk %}">Edit</a> |
+                        <a href="{% url 'patient_delete' admission.patient.pk %}">Delete</a> |
+                        <a href="{% url 'discharge_create' admission_pk=admission.pk %}">Discharge</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-      </div>
+        {% else %}
+        <p>No patients currently admitted.</p>
+        {% endif %}
 
-      <div class="recent-patients">
-        <h2>المرضى الذين خرجوا حديثاً</h2>
+        <!-- Recent Discharged Patients -->
+        <h2>Recently Discharged Patients</h2>
+        {% if discharged_patients %}
         <table>
-          <tr>
-            <th>الإسم بالكامل</th>  <th>رقم الدخول</th>   <th>تاريخ الدخول</th>  <th>وقت الدخول</th>  <th>الإجراءات</th>
-          </tr>
-
-          {% for patient in recent_discharged_patients %}
-          <tr>
-            <td>{{ patient.full_name }}</td>
-            <td>{{ patient.admission_number }}</td>
-            <td>{{ patient.admission_date }}</td>
-            <td>{{ patient.admission_time }}</td>
-            <td class="action-icons">
-              <a href="{% url 'print_preview' patient.pk %}"><img src="{% static 'images/print_icon.png' %}" alt="Print Icon" style="width: 30px; height: 30px;"></a> |
-              <a href="{% url 'patient_update' patient.pk %}"><img src="{% static 'images/edit_icon.png' %}" alt="Edit Icon" style="width: 30px; height: 30px;"></a> |
-              <a href="{% url 'patient_delete' patient.pk %}"><img src="{% static 'images/delete_icon.png' %}" alt="Delete Icon" style="width: 30px; height: 30px;"></a>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="5">لا يوجد مرضى الذين خرجوا حديثاً</td>
-          </tr>
-          {% endfor %}
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Admission Number</th>
+                    <th>Discharge Date</th>
+                    <th>Discharge Time</th>
+                    <th>Length of Stay (Days)</th>
+                    <th>Discharge Status</th>
+                    <th>Discharge Destination</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for discharge in discharged_patients %}
+                <tr>
+                    <td>{{ discharge.admission_number.patient.full_name }}</td>
+                    <td>{{ discharge.admission_number.admission_number }}</td>
+                    <td>{{ discharge.discharge_date }}</td>
+                    <td>{{ discharge.discharge_time }}</td>
+                    <td>{{ discharge.length_of_stay }}</td>
+                    <td>{{ discharge.discharge_status }}</td>
+                    <td>{{ discharge.discharge_destination }}</td>
+                    <td>
+                        <a href="{% url 'patient_detail' discharge.admission_number.patient.pk%}">Details</a> |
+                        <a href="{% url 'patient_edit' discharge.admission_number.patient.pk %}">Edit</a> |
+                        <a href="{% url 'patient_delete' discharge.admission_number.patient.pk %}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-      </div>
-    </main>
+        {% else %}
+        <p>No patients recently discharged.</p>
+        {% endif %}
 
-    <footer>
-      <div class="help-support">
-        <p>Need Help? Contact Support.</p>
-        <a href="#" class="icon-link"><img src="{% static 'images/user_guides_icon.png' %}" alt="User Guides Icon" class="icon" style="width: 30px; height: 30px;"></a> |
-        <a href="#" class="icon-link"><img src="{% static 'images/faqs_icon.png' %}" alt="FAQs Icon" class="icon" style="width: 30px; height: 30px;"></a> |
-        <a href="#" class="icon-link"><img src="{% static 'images/contact_support_icon.png' %}" alt="Contact Support Icon" class="icon" style="width: 30px; height: 30px;"></a>
-      </div>
-    </footer>
-  </div>
-</body>
-</html>
+        <section class="about">
+            <h2>About</h2>
+            <p>This system helps manage patient admissions, discharges, and related information.</p>
+        </section>
+</div>
+
+{% endblock %}

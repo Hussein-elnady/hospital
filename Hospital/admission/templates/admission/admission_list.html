@@ -1,0 +1,85 @@
+{% extends 'admission/base.html' %}
+
+{% block title %}Admission List{% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        max-width: 1400px;
+        margin: 10px auto;
+        background-image: linear-gradient(to bottom, #e0e4e8, #d3d7de);
+        padding: 1rem;
+        border-radius: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 13px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px;
+    }
+
+    th,
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        text-align: center;
+        background-color: #5fafc3;
+        font-weight: bold;
+    }
+
+    td {
+        vertical-align: middle;
+    }
+</style>
+
+<h1>Admission List</h1>
+
+<table class="container">
+    <thead>
+        <tr>
+            <th>Admission Number</th>
+            <th>Patient Name</th>
+            <th>National ID</th>
+            <th>Date of Birth</th>
+            <th>Admitted By</th>
+            <th>Admission Date</th>
+            <th>Treating Physician</th>
+            <th>Admission Department</th>
+            <th>Room</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for admission in admissions %}
+        <tr>
+            <td>{{ admission.admission_number }}</td>
+            <td>{{ admission.patient.full_name }}</td>
+            <td>{{ admission.patient.national_number }}</td>
+            {% if admission.patient.date_of_birth %}
+            <td>{{ admission.patient.date_of_birth }}</td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+            <td>{{ admission.admitted_by }}</td>
+            <td>{{ admission.admission_date }}</td>
+            <td>{{ admission.treating_physician }}</td>
+            <td>{{ admission.admission_department }}</td>
+            <td>{{ admission.room }}</td>
+            <td>
+                <a href="{% url 'admission_detail' admission.pk %}">Print</a> |
+                <a href="{% url 'admission_edit' admission.pk %}">Edit</a> |
+                <a href="{% url 'admission_delete' admission.pk %}">Delete</a> |
+                <a href="{% url 'discharge_create' admission.pk %}">Discharge</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

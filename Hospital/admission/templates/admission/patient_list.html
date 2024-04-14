@@ -1,32 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List of Patients</title>
-</head>
-<body>
-    <h1>List of Patients</h1>
-    <table border="1">
-        <thead>
+{% extends 'admission/base.html' %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 1550px;
+        margin: 20px auto;
+        font-size: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        text-align: center;
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    td {
+        vertical-align: middle;
+    }    
+</style>
+
+<div class="container">
+    <h1 class="title">Patients List</h1>
+    <form method="GET" action="{% url 'patient_list' %}">
+        <label for="search_national_number">Search by National Number:</label>
+        <input type="text" id="search_national_number" name="search_national_number" placeholder="Enter national number">
+        <button type="submit">Search</button>
+    </form>
+    <table>
+        <thead>            
             <tr>
                 <th>Full Name</th>
-                <th>Admission Number</th>
+                <th>National Number</th>
                 <th>Date of Birth</th>
-                <!-- Add more headers as needed -->
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Insurance Number</th>
+                <th>Social Status</th>
+                <th>Religion</th>
+                <th>Profession</th>
+                <th>Employer</th>
+                <th>Address</th>
+                <th>City/Village</th>
+                <th>Governorate</th>
+                <th>Phone Number</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {% for patient in patients %}
-            <tr>
-                <td>{{ patient.full_name }}</td>
-                <td>{{ patient.admission_number }}</td>
-                <td>{{ patient.date_of_birth }}</td>
-                <td>{{ patient.}}</td>
-                <!-- Add more fields as needed -->
-            </tr>
+                <tr>
+                    <td>{{ patient.full_name }}</td>
+                    <td>{{ patient.national_number }}</td>
+                    <td>{{ patient.date_of_birth }}</td>
+                    <td>{{ patient.age }}</td>
+                    <td>{{ patient.gender }}</td>
+                    <td>{{ patient.insurance_number }}</td>
+                    <td>{{ patient.social_status }}</td>
+                    <td>{{ patient.religion }}</td>
+                    <td>{{ patient.profession }}</td>
+                    <td>{{ patient.employer }}</td>
+                    <td>{{ patient.address }}</td>
+                    <td>{{ patient.city_village }}</td>
+                    <td>{{ patient.governorate }}</td>
+                    <td>{{ patient.phone_number }}</td>
+                    <td>
+                        <a href="{% url 'patient_edit' patient.pk %}">Edit</a> | 
+                        <a href="{% url 'patient_delete' patient.pk %}">Delete</a> |
+                        <a href="{% url 'admission_create' patient.pk %}">Create Admission</a> |
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+</div>
+{% endblock %}
