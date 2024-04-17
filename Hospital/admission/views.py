@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Patient, Admission, Discharge
@@ -78,7 +79,7 @@ def patient_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Patient updated successfully!')
-            return redirect('patient_detail', pk=pk)
+            return redirect('main_page', pk=pk)
     else:
         form = PatientForm(instance=patient)
     return render(request, 'admission/patient_edit.html', {'form': form, 'patient': patient})
@@ -118,7 +119,7 @@ def admission_create(request, patient_pk):
             admission.patient = patient
             admission.save()
             messages.success(request, 'Admission created successfully!')
-            return redirect('patient_detail', pk=patient.pk)
+            return redirect('admission_detail', pk=admission.pk)  # Redirect to 'admission_detail'
     else:
         form = AdmissionForm()
     return render(request, 'admission/admission_create.html', {'form': form, 'patient': patient})
@@ -132,7 +133,7 @@ def admission_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Admission updated successfully!')
-            return redirect('admission_detail', pk=pk)
+            return redirect('main_page')  # Redirect to 'main_page'
     else:
         form = AdmissionForm(instance=admission)
     return render(request, 'admission/admission_edit.html', {'form': form, 'admission': admission})
@@ -162,25 +163,22 @@ def admission_detail(request, pk):
     return render(request, 'admission/admission_detail.html', context)
 
 
-@login_required
-def discharge_create(request, admission_pk):
-    admission = Admission.objects.get(pk=admission_pk)
-    patient = admission.patient
-    discharge_instance, created = Discharge.objects.get_or_create(admission_number=admission)
-    form = DischargeForm(request.POST or None, instance=discharge_instance)
-    if form.is_valid():
-        # Set discharge_date before saving the form
-        discharge_instance.discharge_date = timezone.now().date()  # or set it to the desired value
-        form.save()
-        return redirect('patient_detail', patient_pk=patient.pk)
+# ---------------------------------------- Discharge ---------------------------------------- #
 
-    context = {
-        'patient': patient,
-        'admission': admission,
-        'form': form,
-        'patient_name': patient.full_name,
-    }
-    return render(request, 'admission/discharge_form.html', context)
+def discharge_create(request, admission_pk):
+    admission = get_object_or_404(Admission, pk=admission_pk)
+    patient_name = admission.patient.full_name  # Get the patient's name from the admission
+    if request.method == 'POST':
+        form = DischargeForm(request.POST)
+        if form.is_valid():
+            discharge = form.save(commit=False)
+            discharge.admission_number = admission  # Assign admission object directly
+            discharge.save()
+            messages.success(request, 'Discharge information added successfully.')
+            return redirect('admission_detail', pk=admission.pk)
+    else:
+        form = DischargeForm(initial={'admission_number': admission.admission_number})
+    return render(request, 'admission/discharge_form.html', {'form': form, 'patient_name': patient_name})
 
 
 @login_required
@@ -219,5 +217,5 @@ def discharge_delete(request, admission_pk):
     if request.method == 'POST':
         discharge_instance.delete()
         messages.success(request, 'Discharge details deleted successfully!')
-        return redirect('main_page', pk=admission_pk)
+        return redirect('main_page')
     return render(request, 'admission/discharge_confirm_delete.html', {'admission': admission})

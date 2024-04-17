@@ -13,56 +13,23 @@
     <p style="color: red;">{{ error_message }}</p>
     {% endif %}
 
-    {% if form.is_valid %}
-    <p>Discharge information saved successfully!</p>
-    {% else %}
     <form method="post">
         {% csrf_token %}
         <table>
+            {% for field in form %}
             <tr>
-                <th><label for="id_patient">Patient Name:</label></th>
-                <td colspan="2">{{ patient_name }}</td>
-                <th><label for="id_admission_number">Admission Number:</label></th>
-                <td colspan="2">{{ form.admission_number.value }}</td>
+                <th><label for="{{ field.id_for_label }}">{{ field.label }}</label></th>
+                <td colspan="2">{{ field }}</td>
+                <td colspan="3">
+                    {% for error in field.errors %}
+                    <span style="color: red;">{{ error }}</span><br>
+                    {% endfor %}
+                </td>
             </tr>
-
-            <tr>
-                <th><label for="id_discharge_date">Discharge Date:</label></th>
-                <td colspan="2">{{ form.discharge_date }}</td>
-                <th><label for="id_discharge_time">Discharge Time:</label></th>
-                <td colspan="2">{{ form.discharge_time }}</td>
-            </tr>
-            <tr>
-                <th><label for="id_final_diagnosis">Final Diagnosis:</label></th>
-                <td colspan="5">{{ form.final_diagnosis }}</td>
-            </tr>
-            <tr>
-                <th><label for="id_associated_diagnosis">Associated Diagnosis:</label></th>
-                <td colspan="5">{{ form.associated_diagnosis }}</td>
-            </tr>
-            <tr>
-                <th><label for="id_operation_procedures">Operation Procedures:</label></th>
-                <td colspan="5">{{ form.operation_procedures }}</td>
-            </tr>
-            <tr>
-                <th><label for="id_service_type">Service Type:</label></th>
-                <td>{{ form.service_type }}</td>
-            </tr>
-            <tr>
-
-                <th><label for="id_autopsy">Autopsy:</label></th>
-                <td>{{ form.autopsy }}</td>
-                <th><label for="id_discharge_status">Discharge Status:</label></th>
-                <td>{{ form.discharge_status }}</td>            
-                <th><label for="id_discharge_destination">Discharge Destination:</label></th>
-                <td>{{ form.discharge_destination }}</td>
-            </tr>
+            {% endfor %}
         </table>
 
         <button type="submit" class="btn btn-primary">Discharge Patient</button>
     </form>
-    {% endif %}
-
-    <p><a href="{% url 'patient_detail' pk=patient.pk %}">Back to Patient Details</a></p>
 </div>
 {% endblock %}

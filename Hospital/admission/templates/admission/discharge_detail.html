@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discharge Details</title>
+</head>
+<body>
+    <h1>Discharge Details</h1>
+    <p><strong>Admission Number:</strong> {{ discharge.admission_number }}</p>
+    <p><strong>Discharge Date:</strong> {{ discharge.discharge_date }}</p>
+    <p><strong>Discharge Time:</strong> {{ discharge.discharge_time }}</p>
+    <p><strong>Length of Stay:</strong> {{ discharge.length_of_stay }}</p>
+    <!-- Add other discharge fields as needed -->
+    <a href="{% url 'discharge_update' discharge_id=discharge.pk %}">Edit</a>
+    <a href="{% url 'discharge_delete' discharge_id=discharge.pk %}">Delete</a>
+</body>
+</html>

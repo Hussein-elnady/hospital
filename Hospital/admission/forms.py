@@ -111,6 +111,7 @@ class DischargeForm(forms.ModelForm):
         model = Discharge
         fields = '__all__'
         widgets = {
+            'admission_number': forms.TextInput(attrs={'readonly': True}),
             'discharge_date': forms.DateInput(attrs={'type': 'date', 'placeholder': 'Enter Discharge Date'}),
             'discharge_time': forms.TimeInput(attrs={'type': 'time', 'placeholder': 'Enter Discharge Time'}),
             'length_of_stay': forms.NumberInput(attrs={'placeholder': 'Length of Stay (days)'}),
@@ -146,25 +147,3 @@ class DischargeForm(forms.ModelForm):
             'discharge_status': 'Select discharge status',
             'discharge_destination': 'Select discharge destination',
         }
-
-    def clean(self):
-        cleaned_data = super().clean()
-        discharge_date = cleaned_data.get('discharge_date')
-        discharge_time = cleaned_data.get('discharge_time')
-        admission = self.instance.admission_number
-
-        # Check if admission exists and both discharge date and time are provided
-        if admission and discharge_date is not None and discharge_time is not None:
-            admission_date = admission.admission_date
-            admission_time = admission.admission_time
-
-            # Ensure admission date and time are not None
-            if admission_date and admission_time:
-                admission_datetime = datetime.combine(admission_date, admission_time)
-                discharge_datetime = datetime.combine(discharge_date, discharge_time)
-
-                # Check if discharge datetime is valid
-                if discharge_datetime < admission_datetime:
-                    raise forms.ValidationError("Discharge date/time cannot be before admission date/time.")
-
-        return cleaned_data

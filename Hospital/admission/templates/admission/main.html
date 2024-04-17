@@ -1,5 +1,7 @@
 {% extends 'admission/base.html' %}
 
+{% load static %}
+
 {% block title %}Hospital Management System - Main Page{% endblock %}
 
 {% block content %}
@@ -96,18 +98,15 @@
 <div class="container">
     <div class="jumbotron">
         <h1 class="display-5">Welcome to Hospital Management System</h1>
-        <p class="lead">This is the main page of the system.</p>
+  <!---      <p class="lead">This is the main page of the system.</p>
         <hr class="my-4">
-        <p>You can navigate through the system using the navigation bar above.</p>
+        <p>You can navigate through the system using the navigation bar above.</p> -->
     </div>
 
-    <section class="navigationli">
-        <h2 class="section-heading">Navigation</h2>
+    <section class="navigationli">       
         <nav>
             <ul>
                 <li><a href="{% url 'patient_create' %}">Create New Patient</a></li>
-
-                <!-- You can uncomment and add more navigation links here as needed -->
             </ul>
         </nav>
     </section>
@@ -146,10 +145,10 @@
                     <td>{{ admission.admission_department }}</td>
                     <td>{{ admission.room }}</td>
                     <td>
-                        <a href="{% url 'admission_detail' admission.pk %}">Print</a> |
-                        <a href="{% url 'patient_edit' admission.patient.pk %}">Edit</a> |
-                        <a href="{% url 'patient_delete' admission.patient.pk %}">Delete</a> |
-                        <a href="{% url 'discharge_create' admission_pk=admission.pk %}">Discharge</a>
+                        <a href="{% url 'admission_detail' admission.pk %}"><img src="{% static 'images/print_icon.png' %}" alt="Print Icon" style="width: 30px; height: 30px;"></a> |
+                        <a href="{% url 'patient_edit' admission.patient.pk %}"><img src="{% static 'images/edit_icon.png' %}" alt="Edit Icon" style="width: 30px; height: 30px;"></a> |
+                        <a href="{% url 'patient_delete' admission.patient.pk %}"><img src="{% static 'images/delete_icon.png' %}" alt="Delete Icon" style="width: 30px; height: 30px;"></a> |
+                        <a href="{% url 'discharge_create' admission_pk=admission.pk %}"><img src="{% static 'images/discharge_icon.png' %}" alt="Discharge Icon" style="width: 30px; height: 30px;"></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -158,8 +157,8 @@
         {% else %}
         <p>No patients currently admitted.</p>
         {% endif %}
-
-        <!-- Recent Discharged Patients -->
+<!--
+        Recent Discharged Patients 
         <h2>Recently Discharged Patients</h2>
         {% if discharged_patients %}
         <table>
@@ -186,7 +185,8 @@
                     <td>{{ discharge.discharge_status }}</td>
                     <td>{{ discharge.discharge_destination }}</td>
                     <td>
-                        <a href="{% url 'patient_detail' discharge.admission_number.patient.pk%}">Details</a> |
+                        <a href="{% url 'admission_detail' discharge.admission_number.patient.pk %}"><img src="{% static 'images/print_icon.png' %}" alt="Print Icon" style="width: 30px; height: 30px;"></a> |
+                        
                         <a href="{% url 'patient_edit' discharge.admission_number.patient.pk %}">Edit</a> |
                         <a href="{% url 'patient_delete' discharge.admission_number.patient.pk %}">Delete</a>
                     </td>
@@ -197,6 +197,7 @@
         {% else %}
         <p>No patients recently discharged.</p>
         {% endif %}
+    -->
 
         <section class="about">
             <h2>About</h2>
