@@ -36,9 +36,78 @@
     td {
         vertical-align: middle;
     }
+
+    /* Search Form Styles */
+.search-form-container {
+    display: flex ;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    background-image: linear-gradient(to right, #a2bbd2, #b6f1b0);
+    border-radius: 5px;
+    padding: 15px;
+    width: 30%;
+    height: 10px;
+   
+}
+
+.search-form input[type="text"] {
+    padding: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    width: calc(100% - 140px);
+    background-color: transparent;
+    color: hsl(0, 0%, 0%);
+}
+
+.search-form button[type="submit"] {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #06afa4;
+    color: #3e8e9b;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.search-form button[type="submit"]:hover {
+    background-color: rgba(7, 100, 140, 0.8);
+}
+
 </style>
 
 <h1>Admission List</h1>
+
+<div class="search-form-container">
+    <!-- Search Form for National ID -->
+    <form method="GET" action="{% url 'admission_list' %}" class="search-form">
+        <input type="text" name="national_id" placeholder="Search by National ID">
+    </form>
+
+    <!-- Search Form for Admission Number -->
+    <form method="GET" action="{% url 'admission_list' %}" class="search-form">
+        <input type="text" name="admission_number" placeholder="Search by Admission Number">
+    </form>
+
+    <!-- Single Button for Submission -->
+    <button type="submit" onclick="submitForms()">Search</button>
+</div>
+
+<script>
+    function submitForms() {
+        document.forms[0].submit();
+        document.forms[1].submit();
+    }
+</script>
 
 <table class="container">
     <thead>

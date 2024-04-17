@@ -163,6 +163,22 @@ def admission_detail(request, pk):
     return render(request, 'admission/admission_detail.html', context)
 
 
+@login_required
+def admission_list(request):
+    query_national_id = request.GET.get('national_id')
+    query_admission_number = request.GET.get('admission_number')
+
+    admissions = Admission.objects.all()
+
+    if query_national_id:
+        admissions = admissions.filter(patient__national_number=query_national_id)
+
+    if query_admission_number:
+        admissions = admissions.filter(admission_number=query_admission_number)
+
+    return render(request, 'admission/admission_list.html', {'admissions': admissions})
+
+
 # ---------------------------------------- Discharge ---------------------------------------- #
 
 def discharge_create(request, admission_pk):
@@ -179,12 +195,6 @@ def discharge_create(request, admission_pk):
     else:
         form = DischargeForm(initial={'admission_number': admission.admission_number})
     return render(request, 'admission/discharge_form.html', {'form': form, 'patient_name': patient_name})
-
-
-@login_required
-def admission_list(request):
-    admissions = Admission.objects.all()
-    return render(request, 'admission/admission_list.html', {'admissions': admissions})
 
 
 @login_required
